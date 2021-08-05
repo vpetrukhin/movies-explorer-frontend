@@ -1,0 +1,30 @@
+.header {
+  padding: 20px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header__menu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header__btn {
+  box-sizing: border-box;
+  
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  color: #ffffff;
+}
+.header__btn:not(:last-of-type) {
+  margin-right: 30px;
+}
+.header__btn_green {
+  width: 76px;
+  height: 32px;
+  background: #3DDC84;
+  border-radius: 3px;
+  color: #000000;
+}
