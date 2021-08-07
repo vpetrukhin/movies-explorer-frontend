@@ -1,6 +1,5 @@
 .app {
   height: 100%;
-  padding: 0 40px;
   display: flex;
   flex-direction: column;
   font-family: Inter, sans-serif;

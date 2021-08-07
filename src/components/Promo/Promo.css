@@ -1,6 +1,7 @@
 .promo {
+  max-width: 1200px;
   min-height: 493px;
-  margin-bottom: 110px;
+  margin: 0 auto 110px;
   display: flex;
   flex-direction: column;
   background: #272727;

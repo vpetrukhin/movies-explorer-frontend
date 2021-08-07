@@ -2,6 +2,7 @@ import React from 'react';
 
 import Promo from '../Promo/Promo';
 import AboutProject from '../AboutProject/AboutProject';
+import Techs from '../Techs/Techs';
 
 const Main = () => {
   
@@ -9,6 +10,7 @@ const Main = () => {
     <main className="main">
       <Promo />
       <AboutProject />
+      <Techs />
     </main>
   )
 }
