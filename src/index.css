@@ -16,3 +16,5 @@
 @import './components/SearchForm/SearchForm.css';
 @import './components/FilterCheckbox/FilterCheckbox.css';
 @import './components/Preloader/Preloader.css';
+@import './components/MoviesCardList/MoviesCardList.css';
+@import './components/MoviesCard/MoviesCard.css';

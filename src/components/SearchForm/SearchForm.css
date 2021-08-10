@@ -1,6 +1,7 @@
 .search-form {
+  box-sizing: border-box;
   max-width: 1140px;
-  margin: 0 auto;
+  margin: 0 auto 70px;
   padding: 25px 30px 25px 63px;
   position: relative;
   display: flex;
