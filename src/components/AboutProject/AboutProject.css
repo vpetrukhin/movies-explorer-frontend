@@ -67,3 +67,37 @@
   line-height: 1.21;
   color: #8B8B8B;
 }
+@media screen and (max-width: 1200px) {
+  .about-project {
+    width: 87%;
+    margin: 90px auto;
+  }
+  .about-project__text {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+}
+@media screen and (max-width: 530px) {
+  .about-project__discription {
+    flex-direction: column;
+    margin-bottom: 60px;
+  }
+  .about-project__back {
+    flex-basis: 35%;
+  }
+  .about-project__front {
+    flex-basis: 75%;
+  }
+  .about-project__stages {
+    flex-basis: 100%;
+    margin-right: 0;
+    margin-bottom: 56px;
+  }
+  .about-project__weeks {
+    flex-basis: 100%;
+  }
+  .about-project__rectangle {
+    font-size: 11px;
+    line-height: 1.45;
+  }
+}

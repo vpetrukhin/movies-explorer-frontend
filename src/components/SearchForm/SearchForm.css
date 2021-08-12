@@ -62,3 +62,13 @@
   background: #424242;
   transform: rotate(90deg);
 }
+
+@media screen and (max-width: 1140px) {
+  .search-form {
+    width: 92%;
+    margin-bottom: 110px;
+  }
+  .search-form__input {
+    flex-basis: 45%;
+  }
+}

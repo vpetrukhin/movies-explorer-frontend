@@ -19,4 +19,7 @@
 @import './components/Preloader/Preloader.css';
 @import './components/MoviesCardList/MoviesCardList.css';
 @import './components/MoviesCard/MoviesCard.css';
+@import './components/Input/Input.css';
 @import './components/Register/Register.css';
+@import './components/Login/Login.css';
+@import './components/Profile/Profile.css';

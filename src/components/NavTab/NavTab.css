@@ -24,3 +24,9 @@
   line-height: 1.33;
   color: #FFFFFF;
 }
+@media screen and (max-width: 550px) {
+  .nav__link {
+    font-size: 10px;
+    line-height: 16px;
+  }
+}

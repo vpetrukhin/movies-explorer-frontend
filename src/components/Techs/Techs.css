@@ -42,6 +42,7 @@
   max-width: 690px;
   list-style: none;
   display: flex;
+  gap: 10px;
 }
 .techs__item {
   width: 90px;
@@ -53,6 +54,40 @@
   background: #303030;
   border-radius: 10px;
 }
-.techs__item:not(:last-of-type) {
-  margin-right: 10px;
+
+@media screen and (max-width: 1200px) {
+  .techs {
+    margin-bottom: 90px;
+    padding: 90px 0;
+  }
+  .techs__container {
+    width: 87%;
+    margin: 0 auto;
+  }
+  .techs__heading {
+    margin-bottom: 22px;
+  }
+  .techs__subheading {
+    margin-bottom: 83px;
+    font-size: 12px;
+    line-height: 1.50;
+  }
+  .techs__item {
+    font-size: 12px;
+    line-height: 15px;
+  }
+}
+@media screen and (max-width: 530px) {
+  .techs__heading {
+    margin-bottom: 24px;
+    font-size: 30px;
+    line-height: 36px;
+  }
+  .techs__list {
+    max-width: 200px;
+    flex-wrap: wrap;
+  }
+  .techs__item:not(:last-of-type) {
+    margin-right: 0px;
+  }
 }

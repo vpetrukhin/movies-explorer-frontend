@@ -1,20 +1,21 @@
 .movies-card {
   max-width: 360px;
+  width: 100%;
 }
 .movies-card__img-wrapper {
   margin-bottom: 14px;
   position: relative;
 }
 .movies-card__img {
+  width: 100%;
   border-radius: 6px;
 }
 .movies-card__btn {
-
   padding: 6px 7px;
   position: absolute;
   top: 14px;
   right: 14px;
-  z-index: 9999;
+  z-index: 998;
   font-weight: normal;
   font-size: 10px;
   line-height: 0.9;
@@ -56,4 +57,10 @@
   color: #8B8B8B;
   background: #2F2F2F;
   border-radius: 3px;
+}
+
+@media screen and (max-width: 900px) {
+  .movies-card {
+    max-width: 339px;
+  }
 }
