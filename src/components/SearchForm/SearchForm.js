@@ -6,9 +6,11 @@ const SearchForm = () => {
   
   return (
     <form className="search-form">
-      <input className="search-form__input"  placeholder="Фильм" />
-      <button className="search-form__btn" type="submit" />
-      <FilterCheckbox />
+      <div className="search-form__inner">
+        <input className="search-form__input"  placeholder="Фильм" />
+        <button className="search-form__btn" type="submit" />
+      </div>
+      <div className="search-form__checkbox-wrapper"><FilterCheckbox /></div>
     </form>
   )
 }

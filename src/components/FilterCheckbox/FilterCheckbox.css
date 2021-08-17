@@ -26,3 +26,9 @@
 .filter-checkbox__input:checked+.filter-checkbox__label::before {
   background-position: 17px center;
 }
+
+@media screen and (max-width: 660px) {
+  .filter-checkbox {
+    flex-basis: 100%;
+  }
+}

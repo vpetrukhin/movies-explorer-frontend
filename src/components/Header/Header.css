@@ -81,6 +81,9 @@
   }
 }
 @media screen and (max-width: 530px) {
+  .header {
+    padding: 18px 23px 18px 14px;
+  }
   .header__btn {
     width: 54px;
     height: 26px;

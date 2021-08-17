@@ -5,8 +5,12 @@
   align-items: center;
   justify-content: space-between;
 }
-
-.menu__btn {
+.btns {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.btns__btn {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -17,11 +21,11 @@
   color: #ffffff;
 }
 
-.menu__btn:not(:last-of-type) {
+.btns__btn:not(:last-of-type) {
   margin-right: 30px;
 }
 
-.menu__btn_green {
+.btns__btn_green {
   width: 76px;
   height: 32px;
   padding: 8px 0;
@@ -119,6 +123,7 @@
 
 @media screen and (max-width: 768px) {
   .menu {
+    display: none;
     box-sizing: border-box;
     max-width: 520px;
     height: 100%;
@@ -130,10 +135,9 @@
     right: 0;
     z-index: 999;
     background: #202020;
-    transform: translateX(470px);
   }
   .menu_active {
-    transform: translateX(0);
+    display: flex;
   }
   .menu__link_active {
     padding-bottom: 4px;
@@ -154,7 +158,7 @@
   .menu__burger-btn {
     display: block;
   }
-  .menu__btn {
+  .btns__btn {
     font-size: 12px;
     line-height: 1.33;
   }
@@ -172,7 +176,14 @@
 }
 
 @media screen and (max-width: 530px) {
-  .menu__btn {
+  .menu {
+    width: 100%;
+    padding: 144px 10px 48px;
+  }
+  .menu__account {
+    margin-left: 0;
+  }
+  .btns__btn {
     width: 54px;
     height: 26px;
     padding: 5px 0;
@@ -180,7 +191,7 @@
     line-height: 1.6;
   }
 
-  .menu__btn:not(:last-of-type) {
+  .btns__btn:not(:last-of-type) {
     margin-right: 14px;
   }
 }

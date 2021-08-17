@@ -31,7 +31,7 @@ function App() {
         </Route>
         <Route path="/profile">
           <Header />
-          <Profile />
+          <Profile user="Виталий" />
         </Route>
         <Route path="/signup">
           <Register />

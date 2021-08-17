@@ -43,6 +43,9 @@
 }
 
 @media screen and (max-width: 530px) {
+  .footer {
+    padding: 0 10px 10px;
+  }
   .footer__text { 
     font-size: 12px;
     line-height: 15px;
