@@ -57,3 +57,18 @@
 .register__link:hover {
   color: #3DDC84;
 }
+
+@media screen and (max-width: 400px) {
+  .register {
+    width: 90%;
+  }
+  .register__logo {
+    margin: 0 auto 50px;
+  }
+  .register__title {
+    text-align: center;
+  }
+  .register__btn {
+    margin-top: 157px;
+  }
+}

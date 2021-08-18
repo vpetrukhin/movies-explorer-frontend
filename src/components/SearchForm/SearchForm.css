@@ -29,7 +29,6 @@
 }
 .search-form__input {
   border: none;
-  margin-right: 46px;
   padding: 2px;
   flex-basis: 80%;
   background: inherit;

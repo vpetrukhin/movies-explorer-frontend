@@ -67,9 +67,7 @@
   left: calc(50% - 14px);
   background-color: #fff;
 }
-.menu__link-main {
-  display: none;
-}
+
 .menu__link {
   display: inline-block;
   text-decoration: none;
@@ -79,11 +77,12 @@
   color: #FFFFFF;
   transition: color 1s;
 }
-
+.menu__link_main {
+  display: none;
+}
 .menu__link:not(:last-of-type) {
   margin-right: 20px;
 }
-
 .menu__link:hover {
   color: #3DDC84;
 }
