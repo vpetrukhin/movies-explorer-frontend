@@ -1,4 +1,8 @@
 .footer {
+  box-sizing: border-box;
+  max-width: 1140px;
+  width: 100%;
+  margin: 0 auto;
   padding: 0 30px 20px 30px;
   flex: 0 0 auto;
 }
@@ -36,4 +40,31 @@
   font-size: 13px;
   line-height: 16px;
   color: inherit;
+}
+
+@media screen and (max-width: 530px) {
+  .footer {
+    padding: 0 10px 10px;
+  }
+  .footer__text { 
+    font-size: 12px;
+    line-height: 15px;
+  }
+  .footer__down {
+    padding-top: 30px;
+    flex-direction: column;
+    align-items: center;
+  }
+  .footer__copyright {
+    order: 2;
+  }
+  .footer__links {
+    margin-bottom: 30px;
+    flex-direction: column;
+    align-items: center;
+  }
+  .footer__item:not(:last-of-type) {
+    margin-right: 0;
+    margin-bottom: 12px;
+  }
 }

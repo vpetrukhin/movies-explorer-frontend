@@ -1,24 +1,31 @@
 .header {
+  box-sizing: border-box;
   max-width: 1144px;
-  width: 1144px;
+  width: 100%;
   margin: 0 auto;
   padding: 20px 30px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
+.header_disactive {
+  display: none;
+}
 .header__menu {
+  height: 30px;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 .header__btn {
   box-sizing: border-box;
-  
   margin: 0;
   padding: 0;
   background-color: transparent;
   border: none;
+  text-decoration: none;
+  text-align: center;
   color: #ffffff;
 }
 .header__btn:not(:last-of-type) {
@@ -27,7 +34,64 @@
 .header__btn_green {
   width: 76px;
   height: 32px;
+  padding: 8px 0;
   background: #3DDC84;
   border-radius: 3px;
   color: #000000;
+}
+.header__link {
+  display: inline-block;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.29;
+  color: #FFFFFF;
+  transition: color 1s;
+}
+.header__link:not(:last-of-type) {
+  margin-right: 20px;
+}
+.header__link:hover {
+  color: #3DDC84;
+}
+.header__account {
+  margin-left: 50px;
+  padding-right: 46px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.14;
+  color: #FFFFFF;
+}
+.header__account::after {
+  content: '';
+  display: block;
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #313131 url(../../images/acc-icon.svg) no-repeat center/10px;
+  border-radius: 6px;
+}
+@media screen and (max-width: 768px) {
+  .header__btn {
+    font-size: 12px;
+    line-height: 1.33;
+  }
+}
+@media screen and (max-width: 530px) {
+  .header {
+    padding: 18px 23px 18px 14px;
+  }
+  .header__btn {
+    width: 54px;
+    height: 26px;
+    padding: 5px 0;
+    font-size: 10px;
+    line-height: 1.6;
+  }
+  .header__btn:not(:last-of-type) {
+    margin-right: 14px;
+  }
 }

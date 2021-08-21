@@ -1,17 +1,26 @@
 import React from 'react';
+import { Route, Switch } from 'react-router-dom';
 
-import logo from '../../images/logo.svg';
+import Logo from '../Logo/Logo';
+import Navigation from '../Navigation/Navigation';
 
 const Header = () => {
   
   return (
-    <header className="header">
-      <img className="header__logo" src={logo} alt="logo"/>
-      <div className="header__menu">
-        <button className="header__btn">Регистрация</button>
-        <button className="header__btn header__btn_green">Войти</button>
-      </div>
-    </header>
+      <Switch>
+        <Route exact path="/">
+          <header className="header">
+            <Logo />
+            <Navigation />
+          </header>
+        </Route>
+        <Route to='/movies'>
+          <header className="header">
+            <Logo />
+            <Navigation />
+          </header>
+        </Route>
+      </Switch>
   )
 }
 export default Header;
