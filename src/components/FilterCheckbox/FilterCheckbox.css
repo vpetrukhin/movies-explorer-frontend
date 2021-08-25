@@ -22,9 +22,11 @@
   background-image: url(../../images/checkbox-radio.svg);
   background-repeat: no-repeat;
   background-position: 3px center;
+  opacity: 0.5;
 }
 .filter-checkbox__input:checked+.filter-checkbox__label::before {
   background-position: 17px center;
+  opacity: 1;
 }
 
 @media screen and (max-width: 660px) {
