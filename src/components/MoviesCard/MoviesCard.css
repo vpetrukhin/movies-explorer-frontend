@@ -55,6 +55,7 @@
   justify-content: space-between;
 }
 .movies-card__title {
+  flex-basis: 80%;
   margin: 0;
   font-weight: 500;
   font-size: 13px;

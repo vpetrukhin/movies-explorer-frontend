@@ -17,7 +17,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [isInfoToolTipActive, setIsInfoToolTipActive] = useState(false);
-
+  const [moreBtnDisabled, setMoreBtnDisabled] = useState(false);
 
   async function getMovieList({ input, isShortFilm }) {
     try {
@@ -32,42 +32,53 @@ function App() {
         setNotFound(false);
       }
       setFetchMovieList(sortMovieList);
-
-      localStorage.setItem('movies', films)
+      localStorage.setItem('movies', JSON.stringify(sortMovieList))
     } catch (err) {
       setLoading(false);
       setIsInfoToolTipActive(true);
     }
   }
 
+  const renderMovies = (fetchMovies, renderCount, moviesArrayForRender) => {
+    if (fetchMovies.length < renderCount) {
+      fetchMovies.forEach((movie) => moviesArrayForRender.push(movie));
+    } else {
+      for (let movieCount = 0; movieCount < renderCount; movieCount++) {
+        const movie = fetchMovies[movieCount];
+
+        moviesArrayForRender.push(movie);
+      }
+    }
+  };
+
   const renderBaseMovies = (fetchMovies, renderCount) => {
     const moviesArrayForRender = [];
 
-    if (fetchMovies.length) {
-      if (fetchMovies.length < renderCount) {
-        fetchMovies.forEach(movie => moviesArrayForRender.push(movie))
-      } else {
-        for (let movieCount = 0; movieCount < renderCount; movieCount++) {
-          const movie = fetchMovies[movieCount];
+    if (localStorage.movies !== undefined) {
+      renderMovies(JSON.parse(localStorage.movies), renderCount, moviesArrayForRender)
+    }
 
-          moviesArrayForRender.push(movie);
-        }
-      }
+    if (fetchMovies.length) {
+      renderMovies(fetchMovies, renderCount, moviesArrayForRender);
     }
 
     setRenderMovieList(moviesArrayForRender);
   }
 
   const renderMoreMovies = (fetchMovies, lastMovieIndex, renderMoreMoviesCount) => {
+    if (!fetchMovies.length) {
+      fetchMovies = JSON.parse(localStorage.movies);
+    }
 
     const moviesArrayForRender = fetchMovies.slice(
       lastMovieIndex,
       lastMovieIndex + renderMoreMoviesCount
     );
 
-
-    console.log(moviesArrayForRender);
-    setRenderMovieList(renderMovieList.concat(moviesArrayForRender));
+    if (lastMovieIndex === fetchMovies.length) {
+      setMoreBtnDisabled(true);
+    }
+      setRenderMovieList(renderMovieList.concat(moviesArrayForRender));
   }
 
   const setCountRenderMovies = () => {
@@ -89,8 +100,6 @@ function App() {
 
     return countsRenderMovies;
   }
-
-
 
   useEffect(() => {
     renderBaseMovies(fetchMovieList, setCountRenderMovies().base);
@@ -119,6 +128,7 @@ function App() {
             notFound={notFound}
             loading={loading}
             isActive={isInfoToolTipActive}
+            moreBtnActive={moreBtnDisabled}
             handleSearchFormSubmit={handleSearchFormSubmit}
             moreMoviesBtnHandler={moreMoviesBtnHandler}
           />

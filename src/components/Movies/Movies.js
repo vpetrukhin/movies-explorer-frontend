@@ -12,6 +12,7 @@ const Movies = ({
   loading,
   isActive,
   moreMoviesBtnHandler,
+  moreBtnActive
 }) => {
   return (
     <main className="movies">
@@ -27,6 +28,7 @@ const Movies = ({
           movieList={movieList}
           notFound={notFound}
           btnHandler={moreMoviesBtnHandler}
+          btnIsActive={moreBtnActive}
         />
       )}
 

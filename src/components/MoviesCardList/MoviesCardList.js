@@ -2,13 +2,13 @@ import React from 'react';
 
 import MoviesCards from '../MoviesCard/MoviesCard';
 
-const MoviesCardList = ({ movieList, notFound, btnHandler }) => {
+const MoviesCardList = ({ movieList, notFound, btnHandler, btnIsActive }) => {
   if (notFound) {
     return (
       <section className="movies-cards">
         <p className="movies-cards__message">Ничего не найдено</p>
       </section>
-    )
+    );
   } else {
     return (
       <section className="movies-cards">
@@ -17,13 +17,17 @@ const MoviesCardList = ({ movieList, notFound, btnHandler }) => {
             <MoviesCards movie={movie} key={movie.id} />
           ))}
         </ul>
-        {movieList.length > 3 && (
-          <button className="movies-cards__btn" type="button" onClick={btnHandler}>
+        {!btnIsActive && (
+          <button
+            className="movies-cards__btn"
+            type="button"
+            onClick={btnHandler}
+          >
             Ещё
           </button>
         )}
       </section>
     );
   }
-}
+};
 export default MoviesCardList;
