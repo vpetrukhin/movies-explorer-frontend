@@ -12,7 +12,9 @@ const Movies = ({
   loading,
   isActive,
   moreMoviesBtnHandler,
-  moreBtnActive
+  moreBtnActive,
+  isCardSave,
+  handleCardSave,
 }) => {
   return (
     <main className="movies">
@@ -29,6 +31,8 @@ const Movies = ({
           notFound={notFound}
           btnHandler={moreMoviesBtnHandler}
           btnIsActive={moreBtnActive}
+          isCardSave={isCardSave}
+          handleCardSave={handleCardSave}
         />
       )}
 

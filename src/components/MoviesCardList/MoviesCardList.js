@@ -2,7 +2,14 @@ import React from 'react';
 
 import MoviesCards from '../MoviesCard/MoviesCard';
 
-const MoviesCardList = ({ movieList, notFound, btnHandler, btnIsActive }) => {
+const MoviesCardList = ({
+  movieList,
+  notFound,
+  btnHandler,
+  btnIsActive,
+  isCardSave,
+  handleCardSave,
+}) => {
   if (notFound) {
     return (
       <section className="movies-cards">
@@ -14,7 +21,12 @@ const MoviesCardList = ({ movieList, notFound, btnHandler, btnIsActive }) => {
       <section className="movies-cards">
         <ul className="movies-cards__list">
           {movieList.map((movie) => (
-            <MoviesCards movie={movie} key={movie.id} />
+            <MoviesCards
+              movie={movie}
+              key={movie.id}
+              isSave={isCardSave}
+              handleSave={handleCardSave}
+            />
           ))}
         </ul>
         {!btnIsActive && (

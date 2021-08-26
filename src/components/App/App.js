@@ -18,6 +18,7 @@ function App() {
   const [notFound, setNotFound] = useState(false);
   const [isInfoToolTipActive, setIsInfoToolTipActive] = useState(false);
   const [moreBtnDisabled, setMoreBtnDisabled] = useState(false);
+  const [isCardSave, setIsCardSave] = useState(false);
 
   async function getMovieList({ input, isShortFilm }) {
     try {
@@ -113,6 +114,11 @@ function App() {
     renderMoreMovies(fetchMovieList, renderMovieList.length, setCountRenderMovies().more);
   }
 
+  const handleCardSave = () => {
+    isCardSave ? setIsCardSave(false) : setIsCardSave(true);
+    console.log(isCardSave);
+  }
+
   return (
     <div className="app">
       <Switch>
@@ -131,6 +137,8 @@ function App() {
             moreBtnActive={moreBtnDisabled}
             handleSearchFormSubmit={handleSearchFormSubmit}
             moreMoviesBtnHandler={moreMoviesBtnHandler}
+            isCardSave={isCardSave}
+            handleCardSave={handleCardSave}
           />
           <Footer />
         </Route>
