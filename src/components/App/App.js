@@ -42,7 +42,7 @@ function App() {
 
   const renderBaseMovies = (fetchMovies, renderCount) => {
     const moviesArrayForRender = [];
-    
+
     if (fetchMovies.length) {
       if (fetchMovies.length < renderCount) {
         fetchMovies.forEach(movie => moviesArrayForRender.push(movie))
@@ -55,8 +55,19 @@ function App() {
       }
     }
 
-    console.log(moviesArrayForRender);
     setRenderMovieList(moviesArrayForRender);
+  }
+
+  const renderMoreMovies = (fetchMovies, lastMovieIndex, renderMoreMoviesCount) => {
+
+    const moviesArrayForRender = fetchMovies.slice(
+      lastMovieIndex,
+      lastMovieIndex + renderMoreMoviesCount
+    );
+
+
+    console.log(moviesArrayForRender);
+    setRenderMovieList(renderMovieList.concat(moviesArrayForRender));
   }
 
   const setCountRenderMovies = () => {
@@ -90,11 +101,7 @@ function App() {
   };
 
   const moreMoviesBtnHandler = () => {
-    
-
-    console.log('movie');
-
-    // setMovieList(movieList.concat(movieMoreList));
+    renderMoreMovies(fetchMovieList, renderMovieList.length, setCountRenderMovies().more);
   }
 
   return (
