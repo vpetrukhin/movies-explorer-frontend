@@ -10,6 +10,7 @@ import Login from '../Login/Login';
 import Profile from '../Profile/Profile';
 import { getFilms } from '../../utils/MoviesApi';
 import { sortFilms } from '../../utils/sortFilms';
+import { login, register } from '../../utils/MainApi';
 
 function App() {
   const [fetchMovieList, setFetchMovieList] = useState([]);
@@ -119,6 +120,24 @@ function App() {
     console.log(isCardSave);
   }
 
+  async function handleRegister({ name, email, password }) {
+    try {
+      const user = await register(name, email, password);
+      console.log(user);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function handleLogin({ email, password }) {
+    try {
+      const user = await login(email, password);
+      console.log(user);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   return (
     <div className="app">
       <Switch>
@@ -152,10 +171,10 @@ function App() {
           <Profile user="Виталий" />
         </Route>
         <Route path="/signup">
-          <Register />
+          <Register registerHandler={handleRegister} />
         </Route>
         <Route path="/signin">
-          <Login />
+          <Login submitHandler={handleLogin} />
         </Route>
       </Switch>
     </div>
