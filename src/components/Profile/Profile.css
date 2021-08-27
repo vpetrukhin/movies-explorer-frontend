@@ -16,6 +16,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  position: relative;
 }
 .profile__input-wrapper:not(:last-of-type) {
   margin-bottom: 17px;

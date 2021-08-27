@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Switch, Route} from 'react-router-dom';
+import { Switch, Route, useHistory} from 'react-router-dom';
 import Main from '../Main/Main';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
@@ -10,7 +10,9 @@ import Login from '../Login/Login';
 import Profile from '../Profile/Profile';
 import { getFilms } from '../../utils/MoviesApi';
 import { sortFilms } from '../../utils/sortFilms';
-import { login, register } from '../../utils/MainApi';
+import { getUserInfo, login, register, updateUserInfo } from '../../utils/MainApi';
+import { currentUserContext } from '../../contexts/userContext';
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 
 function App() {
   const [fetchMovieList, setFetchMovieList] = useState([]);
@@ -20,6 +22,14 @@ function App() {
   const [isInfoToolTipActive, setIsInfoToolTipActive] = useState(false);
   const [moreBtnDisabled, setMoreBtnDisabled] = useState(false);
   const [isCardSave, setIsCardSave] = useState(false);
+  const [currentUser, setCurrentUser] = useState({
+    _id: '',
+    name: '',
+    email: '',
+  })
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  const history = useHistory();
 
   async function getMovieList({ input, isShortFilm }) {
     try {
@@ -120,10 +130,35 @@ function App() {
     console.log(isCardSave);
   }
 
+  async function checkToken () {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      try {
+        const userInfo = await getUserInfo(jwt);
+        if (userInfo) {
+          setCurrentUser({
+            ...currentUser,
+            email: userInfo.email,
+            name: userInfo.name,
+          });
+          setLoggedIn(true);
+          history.push('movies');
+        }
+      } catch (err) {
+        console.log(err);
+      }
+
+    }
+  }
+
+  useEffect(() => {
+    checkToken()
+  }, []);
+
   async function handleRegister({ name, email, password }) {
     try {
       const user = await register(name, email, password);
-      console.log(user);
+      if (user) history.push('signin');
     } catch (err) {
       console.log(err);
     }
@@ -132,23 +167,40 @@ function App() {
   async function handleLogin({ email, password }) {
     try {
       const user = await login(email, password);
-      console.log(user);
+      const { _id, token, name } = await user;
+      setCurrentUser({ _id, name, email: user.email });
+      localStorage.setItem('jwt', token);
+      setLoggedIn(true);
+      history.push('movies');
     } catch (err) {
       console.log(err);
     }
   }
 
+  async function handleUpdateUserInfo({ email, name }) {
+    try {
+      const newUserInfo = await updateUserInfo(email, name, localStorage.getItem('jwt'));
+    if (newUserInfo) {
+      setCurrentUser({ ...currentUser, name: newUserInfo.name, email: newUserInfo.email });
+    }
+    } catch (err) {
+      console.log(err);
+    }
+
+  }
+
   return (
     <div className="app">
-      <Switch>
-        <Route exact path="/">
-          <Header />
-          <Main />
-          <Footer />
-        </Route>
-        <Route path="/movies">
-          <Header />
-          <Movies
+      <currentUserContext.Provider value={currentUser}>
+        <Header />
+        <Switch>
+          <Route exact path="/">
+            <Main />
+          </Route>
+          <ProtectedRoute
+            component={Movies}
+            path="/movies"
+            loggedIn={loggedIn}
             movieList={renderMovieList}
             notFound={notFound}
             loading={loading}
@@ -159,24 +211,17 @@ function App() {
             isCardSave={isCardSave}
             handleCardSave={handleCardSave}
           />
-          <Footer />
-        </Route>
-        <Route path="/saved-movies">
-          <Header />
-          <SavedMovies />
-          <Footer />
-        </Route>
-        <Route path="/profile">
-          <Header />
-          <Profile user="Виталий" />
-        </Route>
-        <Route path="/signup">
-          <Register registerHandler={handleRegister} />
-        </Route>
-        <Route path="/signin">
-          <Login submitHandler={handleLogin} />
-        </Route>
-      </Switch>
+          <ProtectedRoute component={SavedMovies} path="/saved-movies" loggedIn={loggedIn} />
+          <ProtectedRoute component={Profile} path="/profile" loggedIn={loggedIn} profileUpdate={handleUpdateUserInfo} />
+          <Route path="/signup">
+            <Register registerHandler={handleRegister} />
+          </Route>
+          <Route path="/signin">
+            <Login submitHandler={handleLogin} />
+          </Route>
+        </Switch>
+        <Footer />
+      </currentUserContext.Provider>
     </div>
   );
 }

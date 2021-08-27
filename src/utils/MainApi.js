@@ -25,3 +25,30 @@ export async function login(email, password) {
   const json = await res.json()
   return json;
 }
+
+export async function getUserInfo(jwt) {
+  const res = await fetch(`${MYAPI_BASE_URL}/users/me`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      'Authorization': `Bearer ${jwt}`,
+    },
+  });
+  const json = await res.json();
+  return json;
+}
+
+export async function updateUserInfo(email, name, jwt) {
+  const res = await fetch(`${MYAPI_BASE_URL}/users/me`, {
+    method: 'PATCH',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${jwt}`,
+    },
+    body: JSON.stringify({ email, name }),
+  })
+  const json = await res.json();
+  return json;
+}
