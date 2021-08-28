@@ -7,8 +7,8 @@ const MoviesCardList = ({
   notFound,
   btnHandler,
   btnIsActive,
-  isCardSave,
   handleCardSave,
+  savedMovies,
 }) => {
   if (notFound) {
     return (
@@ -24,8 +24,8 @@ const MoviesCardList = ({
             <MoviesCards
               movie={movie}
               key={movie.id}
-              isSave={isCardSave}
-              handleSave={handleCardSave}
+              handleSaveMovie={handleCardSave}
+              savedMovies={savedMovies}
             />
           ))}
         </ul>

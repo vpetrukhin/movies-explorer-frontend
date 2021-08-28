@@ -39,6 +39,7 @@
   opacity: 1;
 }
 .movies-card__btn_saved {
+  opacity: 1;
   width: 21px;
   height: 21px;
   background: #EE3465 url(../../images/movies-btn-icon.svg) no-repeat center/10px 6px;

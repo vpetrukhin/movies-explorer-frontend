@@ -15,6 +15,8 @@ const Movies = ({
   moreBtnActive,
   isCardSave,
   handleCardSave,
+  checkSavedCard,
+  savedMovies,
 }) => {
   return (
     <main className="movies">
@@ -33,6 +35,8 @@ const Movies = ({
           btnIsActive={moreBtnActive}
           isCardSave={isCardSave}
           handleCardSave={handleCardSave}
+          checkSavedCard={checkSavedCard}
+          savedMovies={savedMovies}
         />
       )}
 

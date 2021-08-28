@@ -10,24 +10,34 @@ import Login from '../Login/Login';
 import Profile from '../Profile/Profile';
 import { getFilms } from '../../utils/MoviesApi';
 import { sortFilms } from '../../utils/sortFilms';
-import { getUserInfo, login, register, updateUserInfo } from '../../utils/MainApi';
+import {
+  addFilm,
+  getUserInfo,
+  login,
+  register,
+  updateUserInfo,
+  getSavedFilms,
+  deleteFilm,
+} from "../../utils/MainApi";
 import { currentUserContext } from '../../contexts/userContext';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 
 function App() {
   const [fetchMovieList, setFetchMovieList] = useState([]);
   const [renderMovieList, setRenderMovieList] = useState([]);
+  const [savedMovieList, setSavedMovieList] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [isInfoToolTipActive, setIsInfoToolTipActive] = useState(false);
-  const [moreBtnDisabled, setMoreBtnDisabled] = useState(false);
-  const [isCardSave, setIsCardSave] = useState(false);
+  const [moreBtnDisabled, setMoreBtnDisabled] = useState(true);
   const [currentUser, setCurrentUser] = useState({
     _id: '',
     name: '',
     email: '',
   })
   const [loggedIn, setLoggedIn] = useState(false);
+  const [isCardSave, setIsCardSave] = useState(false);
 
   const history = useHistory();
 
@@ -52,12 +62,12 @@ function App() {
   }
 
   const renderMovies = (fetchMovies, renderCount, moviesArrayForRender) => {
+
     if (fetchMovies.length < renderCount) {
       fetchMovies.forEach((movie) => moviesArrayForRender.push(movie));
     } else {
       for (let movieCount = 0; movieCount < renderCount; movieCount++) {
         const movie = fetchMovies[movieCount];
-
         moviesArrayForRender.push(movie);
       }
     }
@@ -75,6 +85,7 @@ function App() {
     }
 
     setRenderMovieList(moviesArrayForRender);
+    setMoreBtnDisabled(false);
   }
 
   const renderMoreMovies = (fetchMovies, lastMovieIndex, renderMoreMoviesCount) => {
@@ -99,13 +110,13 @@ function App() {
       more: 0,
     }
 
-    if (window.innerWidth >= 1280) {
+    if (window.innerWidth >= 1165) {
       countsRenderMovies.base = 12;
       countsRenderMovies.more = 3;
-    } else if (window.innerWidth >= 768) {
+    } else if (window.innerWidth >= 615 && window.innerWidth <= 1165) {
       countsRenderMovies.base = 8;
       countsRenderMovies.more = 2;
-    } else if (window.innerWidth >= 320 && window.innerWidth <= 425) {
+    } else if (window.innerWidth >= 320 && window.innerWidth <= 615) {
       countsRenderMovies.base = 5;
       countsRenderMovies.more = 2;
     }
@@ -125,9 +136,30 @@ function App() {
     renderMoreMovies(fetchMovieList, renderMovieList.length, setCountRenderMovies().more);
   }
 
-  const handleCardSave = () => {
-    isCardSave ? setIsCardSave(false) : setIsCardSave(true);
-    console.log(isCardSave);
+  async function handleCardSave(filmData, isSave, deleteMovieId) {
+    const jwt = localStorage.jwt;
+    try {
+      if (isSave) {
+        console.log(deleteMovieId);
+        const deleteMovie = await deleteFilm(deleteMovieId, jwt);
+        if (deleteMovie) getSavedMovies();
+      } else {
+        const savedMovie = await addFilm(filmData, jwt);
+        if (savedMovie) {
+          const { movie } = savedMovie;
+          setSavedMovieList(savedMovieList.concat(movie));
+          setIsCardSave(isSave);
+        }
+      }
+
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function getSavedMovies() {
+    const savedMovies = await getSavedFilms(localStorage.jwt);
+    setSavedMovieList(savedMovies);
   }
 
   async function checkToken () {
@@ -151,9 +183,9 @@ function App() {
     }
   }
 
-  useEffect(() => {
-    checkToken()
-  }, []);
+  useEffect(() => checkToken(), []);
+
+  useEffect(() => getSavedMovies(), [isCardSave]);
 
   async function handleRegister({ name, email, password }) {
     try {
@@ -188,7 +220,6 @@ function App() {
     }
 
   }
-
   return (
     <div className="app">
       <currentUserContext.Provider value={currentUser}>
@@ -197,22 +228,31 @@ function App() {
           <Route exact path="/">
             <Main />
           </Route>
+            <ProtectedRoute
+              component={Movies}
+              path="/movies"
+              loggedIn={loggedIn}
+              movieList={renderMovieList}
+              savedMovies={savedMovieList}
+              notFound={notFound}
+              loading={loading}
+              isActive={isInfoToolTipActive}
+              moreBtnActive={moreBtnDisabled}
+              handleSearchFormSubmit={handleSearchFormSubmit}
+              moreMoviesBtnHandler={moreMoviesBtnHandler}
+              handleCardSave={handleCardSave}
+            />
+            <ProtectedRoute
+              component={SavedMovies}
+              path="/saved-movies"
+              loggedIn={loggedIn}
+            />
           <ProtectedRoute
-            component={Movies}
-            path="/movies"
+            component={Profile}
+            path="/profile"
             loggedIn={loggedIn}
-            movieList={renderMovieList}
-            notFound={notFound}
-            loading={loading}
-            isActive={isInfoToolTipActive}
-            moreBtnActive={moreBtnDisabled}
-            handleSearchFormSubmit={handleSearchFormSubmit}
-            moreMoviesBtnHandler={moreMoviesBtnHandler}
-            isCardSave={isCardSave}
-            handleCardSave={handleCardSave}
+            profileUpdate={handleUpdateUserInfo}
           />
-          <ProtectedRoute component={SavedMovies} path="/saved-movies" loggedIn={loggedIn} />
-          <ProtectedRoute component={Profile} path="/profile" loggedIn={loggedIn} profileUpdate={handleUpdateUserInfo} />
           <Route path="/signup">
             <Register registerHandler={handleRegister} />
           </Route>
