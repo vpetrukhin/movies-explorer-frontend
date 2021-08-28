@@ -49,9 +49,8 @@
 .movies-card:hover .movies-card__btn_saved {
   width: 21px;
   height: 21px;
-  padding: 0;
-  color: transparent;
   background: #313131 url(../../images/deleteMoviesIcon.svg) no-repeat center/10px;
+
 }
 .movies-card__description {
   padding: 0 15px;

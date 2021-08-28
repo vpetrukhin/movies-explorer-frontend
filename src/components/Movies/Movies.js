@@ -6,7 +6,7 @@ import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import InfoToolTip from '../InfoToolTip/InfoToolTip';
 
 const Movies = ({
-  handleSearchFormSubmit,
+  handleSearchFormMovies,
   movieList,
   notFound,
   loading,
@@ -21,7 +21,7 @@ const Movies = ({
   return (
     <main className="movies">
       <SearchForm
-        handleSearchFormSubmit={handleSearchFormSubmit}
+        handleSearchFormMovies={handleSearchFormMovies}
         movieList={movieList}
       />
 

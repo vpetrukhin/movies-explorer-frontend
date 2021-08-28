@@ -1,4 +1,5 @@
 import React from 'react';
+import { Route, Switch } from 'react-router-dom';
 
 import MoviesCards from '../MoviesCard/MoviesCard';
 
@@ -8,6 +9,7 @@ const MoviesCardList = ({
   btnHandler,
   btnIsActive,
   handleCardSave,
+  handleDeleteCard,
   savedMovies,
 }) => {
   if (notFound) {
@@ -18,27 +20,46 @@ const MoviesCardList = ({
     );
   } else {
     return (
-      <section className="movies-cards">
-        <ul className="movies-cards__list">
-          {movieList.map((movie) => (
-            <MoviesCards
-              movie={movie}
-              key={movie.id}
-              handleSaveMovie={handleCardSave}
-              savedMovies={savedMovies}
-            />
-          ))}
-        </ul>
-        {!btnIsActive && (
-          <button
-            className="movies-cards__btn"
-            type="button"
-            onClick={btnHandler}
-          >
-            Ещё
-          </button>
-        )}
-      </section>
+      <Switch>
+        <Route path="/movies">
+          <section className="movies-cards">
+            <ul className="movies-cards__list">
+              {movieList.map((movie) => (
+                <MoviesCards
+                  movie={movie}
+                  key={movie.id ? movie.id : movie._id}
+                  handleSaveMovie={handleCardSave}
+                  savedMovies={savedMovies}
+                />
+              ))}
+            </ul>
+            {!btnIsActive && (
+              <button
+                className="movies-cards__btn"
+                type="button"
+                onClick={btnHandler}
+              >
+                Ещё
+              </button>
+            )}
+          </section>
+        </Route>
+        <Route path="/saved-movies">
+          <section className="movies-cards">
+            <ul className="movies-cards__list">
+              {movieList.map((movie) => (
+                <MoviesCards
+                  movie={movie}
+                  key={movie.id ? movie.id : movie._id}
+                  handleSaveMovie={handleCardSave}
+                  savedMovies={savedMovies}
+                  handleDeleteCard={handleDeleteCard}
+                />
+              ))}
+            </ul>
+          </section>
+        </Route>
+      </Switch>
     );
   }
 };

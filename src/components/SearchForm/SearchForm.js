@@ -2,27 +2,29 @@ import React, { useState } from 'react';
 
 import FilterCheckbox from '../FilterCheckbox/FilterCheckbox';
 
-const SearchForm = ({ handleSearchFormSubmit }) => {
-
+const SearchForm = ({ handleSearchFormMovies }) => {
   const [searchFormData, setSearchFormData] = useState({
-    input: '',
+    input: "",
     isShortFilm: false,
     validateError: false,
   });
+  console.log();
 
   const submitHandler = (e) => {
     e.preventDefault();
 
-    if (!searchFormData.input) setSearchFormData({ ...searchFormData, validateError: true });
+    if (!searchFormData.input)
+      setSearchFormData({ ...searchFormData, validateError: true });
 
-    handleSearchFormSubmit(searchFormData.input, searchFormData.isShortFilm);
+    handleSearchFormMovies(searchFormData.input, searchFormData.isShortFilm);
 
-    searchFormData.input = '';
-  }
-  const inputHandler = (e) => setSearchFormData({ ...searchFormData, input: e.target.value });
+    searchFormData.input = "";
+  };
+  const inputHandler = (e) =>
+    setSearchFormData({ ...searchFormData, input: e.target.value });
   const checkboxHandler = (isShortFilm) => {
     setSearchFormData({ ...searchFormData, isShortFilm });
-  }
+  };
 
   return (
     <form className="search-form" onSubmit={submitHandler} noValidate>

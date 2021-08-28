@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Switch, Route, useHistory} from 'react-router-dom';
+import { Switch, Route, useHistory, useLocation} from 'react-router-dom';
 import Main from '../Main/Main';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
@@ -26,6 +26,7 @@ function App() {
   const [fetchMovieList, setFetchMovieList] = useState([]);
   const [renderMovieList, setRenderMovieList] = useState([]);
   const [savedMovieList, setSavedMovieList] = useState([]);
+  const [savedRenderMovieList, setSavedRenderMovieList] = useState([]);
 
   const [loading, setLoading] = useState(false);
   const [notFound, setNotFound] = useState(false);
@@ -40,6 +41,7 @@ function App() {
   const [isCardSave, setIsCardSave] = useState(false);
 
   const history = useHistory();
+  const location = useLocation();
 
   async function getMovieList({ input, isShortFilm }) {
     try {
@@ -63,26 +65,31 @@ function App() {
 
   const renderMovies = (fetchMovies, renderCount, moviesArrayForRender) => {
 
+
     if (fetchMovies.length < renderCount) {
       fetchMovies.forEach((movie) => moviesArrayForRender.push(movie));
     } else {
+
       for (let movieCount = 0; movieCount < renderCount; movieCount++) {
         const movie = fetchMovies[movieCount];
         moviesArrayForRender.push(movie);
       }
     }
+
   };
 
   const renderBaseMovies = (fetchMovies, renderCount) => {
     const moviesArrayForRender = [];
 
-    if (localStorage.movies !== undefined) {
+    if (localStorage.movies !== undefined && fetchMovies.length === 0) {
       renderMovies(JSON.parse(localStorage.movies), renderCount, moviesArrayForRender)
     }
 
     if (fetchMovies.length) {
       renderMovies(fetchMovies, renderCount, moviesArrayForRender);
     }
+
+
 
     setRenderMovieList(moviesArrayForRender);
     setMoreBtnDisabled(false);
@@ -128,30 +135,38 @@ function App() {
     renderBaseMovies(fetchMovieList, setCountRenderMovies().base);
   }, [fetchMovieList]);
 
-  const handleSearchFormSubmit = (input, isShortFilm) => {
-    getMovieList({ input, isShortFilm });
+  const handleSearchFormMovies = (input, isShortFilm) => {
+    if (location.pathname === "/saved-movies") {
+      // console.log(sortFilms(savedMovieList, input, isShortFilm));
+      setSavedRenderMovieList(sortFilms(savedMovieList, input, isShortFilm))
+    } else {
+      getMovieList({ input, isShortFilm });
+    }
   };
 
   const moreMoviesBtnHandler = () => {
     renderMoreMovies(fetchMovieList, renderMovieList.length, setCountRenderMovies().more);
   }
 
-  async function handleCardSave(filmData, isSave, deleteMovieId) {
+  async function handleCardSave(filmData, isSave) {
     const jwt = localStorage.jwt;
     try {
-      if (isSave) {
-        console.log(deleteMovieId);
-        const deleteMovie = await deleteFilm(deleteMovieId, jwt);
-        if (deleteMovie) getSavedMovies();
-      } else {
-        const savedMovie = await addFilm(filmData, jwt);
-        if (savedMovie) {
-          const { movie } = savedMovie;
-          setSavedMovieList(savedMovieList.concat(movie));
-          setIsCardSave(isSave);
-        }
+      const savedMovie = await addFilm(filmData, jwt);
+      if (savedMovie) {
+        const { movie } = savedMovie;
+        setSavedMovieList(savedMovieList.concat(movie));
+        setIsCardSave(isSave);
       }
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
+  async function handleCardDelete(movieId) {
+    const jwt = localStorage.jwt;
+    try {
+      const deleteMovie = await deleteFilm(movieId, jwt);
+      if (deleteMovie) getSavedMovies();
     } catch (err) {
       console.log(err);
     }
@@ -220,6 +235,9 @@ function App() {
     }
 
   }
+
+
+
   return (
     <div className="app">
       <currentUserContext.Provider value={currentUser}>
@@ -228,25 +246,29 @@ function App() {
           <Route exact path="/">
             <Main />
           </Route>
-            <ProtectedRoute
-              component={Movies}
-              path="/movies"
-              loggedIn={loggedIn}
-              movieList={renderMovieList}
-              savedMovies={savedMovieList}
-              notFound={notFound}
-              loading={loading}
-              isActive={isInfoToolTipActive}
-              moreBtnActive={moreBtnDisabled}
-              handleSearchFormSubmit={handleSearchFormSubmit}
-              moreMoviesBtnHandler={moreMoviesBtnHandler}
-              handleCardSave={handleCardSave}
-            />
-            <ProtectedRoute
-              component={SavedMovies}
-              path="/saved-movies"
-              loggedIn={loggedIn}
-            />
+          <ProtectedRoute
+            component={Movies}
+            path="/movies"
+            loggedIn={loggedIn}
+            movieList={renderMovieList}
+            savedMovies={savedMovieList}
+            notFound={notFound}
+            loading={loading}
+            isActive={isInfoToolTipActive}
+            moreBtnActive={moreBtnDisabled}
+            handleSearchFormMovies={handleSearchFormMovies}
+            moreMoviesBtnHandler={moreMoviesBtnHandler}
+            handleCardSave={handleCardSave}
+          />
+          <ProtectedRoute
+            component={SavedMovies}
+            path="/saved-movies"
+            loggedIn={loggedIn}
+            savedMovieList={savedMovieList}
+            MoviesForRender={savedRenderMovieList}
+            handleSearchFormMovies={handleSearchFormMovies}
+            onCardDelete={handleCardDelete}
+          />
           <ProtectedRoute
             component={Profile}
             path="/profile"

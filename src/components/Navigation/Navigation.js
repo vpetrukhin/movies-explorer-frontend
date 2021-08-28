@@ -8,16 +8,15 @@ const Navigation = () => {
 
   const openMobileMenu = () => {
     setmobileMenuState(true);
-    
+
   }
 
   const closeMobileMenu = () => {
     setmobileMenuState(false);
-    console.log('ko');
   }
 
   menuClassName = mobileMenuState ? `menu_active` : '';
-    
+
   return (
     <Switch>
       <Route exact path="/">
@@ -45,7 +44,7 @@ const Navigation = () => {
         </button>
         <div className={`menu ${menuClassName}`}>
         <button type="button" className="menu__burger-btn" onClick={openMobileMenu} />
-          <button className="menu__close-btn" onClick={openMobileMenu}/>
+          <button className="menu__close-btn" onClick={closeMobileMenu}/>
           <NavLink exact to="/" className="menu__link menu__link_main" activeClassName="menu__link_active" onClick={closeMobileMenu}>Главная</NavLink>
           <NavLink to="/movies" className="menu__link" activeClassName="menu__link_active" onClick={closeMobileMenu}>Фильмы</NavLink>
           <NavLink to="/saved-movies" className="menu__link" activeClassName="menu__link_active" onClick={closeMobileMenu}>Сохранённые фильмы</NavLink>
@@ -66,7 +65,7 @@ const Navigation = () => {
         </div>
       </Route>
     </Switch>
-    
+
   )
 }
 export default Navigation;
