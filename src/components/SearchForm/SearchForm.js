@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import FilterCheckbox from '../FilterCheckbox/FilterCheckbox';
 
-const SearchForm = ({ handleSearchFormMovies }) => {
+const SearchForm = ({ handleSearchFormMovies, sortShortFilm }) => {
   const [searchFormData, setSearchFormData] = useState({
     input: "",
     isShortFilm: false,
@@ -24,6 +24,7 @@ const SearchForm = ({ handleSearchFormMovies }) => {
     setSearchFormData({ ...searchFormData, input: e.target.value });
   const checkboxHandler = (isShortFilm) => {
     setSearchFormData({ ...searchFormData, isShortFilm });
+    sortShortFilm(searchFormData);
   };
 
   return (

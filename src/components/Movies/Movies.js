@@ -17,12 +17,13 @@ const Movies = ({
   handleCardSave,
   checkSavedCard,
   savedMovies,
+  sortShortFilm,
 }) => {
   return (
     <main className="movies">
       <SearchForm
         handleSearchFormMovies={handleSearchFormMovies}
-        movieList={movieList}
+        sortShortFilm={sortShortFilm}
       />
 
       {loading && !movieList.length ? (

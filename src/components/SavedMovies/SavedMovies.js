@@ -8,13 +8,17 @@ const SavedMovies = ({
   savedMovieList,
   MoviesForRender,
   onCardDelete,
+  sortShortFilm
 }) => {
   const renderList =
     MoviesForRender.length === 0 ? savedMovieList : MoviesForRender;
 
   return (
     <main className="movies">
-      <SearchForm handleSearchFormMovies={handleSearchFormMovies} />
+      <SearchForm
+        handleSearchFormMovies={handleSearchFormMovies}
+        sortShortFilm={sortShortFilm}
+      />
       <MoviesCardList
         movieList={renderList}
         savedMovies={savedMovieList}

@@ -12,8 +12,9 @@ const MoviesCard = ({
 }) => {
   const [isSave, setIsSave] = useState(false);
 
-  const { image, nameRU, duration, trailerLink } = movie;
-  const id = movie.id || movie.movieId
+  const { image, nameRU, duration } = movie;
+  const id = movie.id || movie.movieId;
+  const trailer = movie.trailerLink || movie.trailer
 
   useEffect(() => {
     setIsSave(savedMovies.some((savedMovie) => savedMovie.movieId === id));
@@ -42,7 +43,7 @@ const MoviesCard = ({
               Сохранить
             </button>
             <a
-              href={trailerLink}
+              href={trailer}
               className="movies-card__link"
               target="_blank"
               rel="noreferrer"
@@ -77,7 +78,7 @@ const MoviesCard = ({
               onClick={handleDelete}
             />
             <a
-              href={trailerLink}
+              href={trailer}
               className="movies-card__link"
               target="_blank"
               rel="noreferrer"

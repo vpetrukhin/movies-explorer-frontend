@@ -71,6 +71,24 @@ function App() {
       .finally(() => setLoading(true));
   }
 
+  function sortShortFilm({ input, isShortFilm }) {
+    const shortFilm = !isShortFilm;
+    console.log(shortFilm);
+
+    if (shortFilm) {
+      if (fetchMovieList.length === 0) {
+        setFetchMovieList(
+          sortFilms(JSON.parse(localStorage.movies), input, shortFilm)
+        );
+      } else {
+        setFetchMovieList(sortFilms(fetchMovieList, input, shortFilm));
+      }
+    } else {
+      setFetchMovieList(JSON.parse(localStorage.movies));
+    }
+
+  }
+
   const renderMovies = (fetchMovies, renderCount, moviesArrayForRender) => {
 
 
@@ -140,6 +158,13 @@ function App() {
   useEffect(() => {
     renderBaseMovies(fetchMovieList, setCountRenderMovies().base);
   }, [fetchMovieList]);
+  useEffect(() => {
+    window.addEventListener('resize', renderBaseMovies(fetchMovieList, setCountRenderMovies().base))
+    return window.removeEventListener(
+      "resize",
+      renderBaseMovies(fetchMovieList, setCountRenderMovies().base)
+    );
+  }, [window.innerWidth])
 
   const handleSearchFormMovies = (input, isShortFilm) => {
     if (location.pathname === "/saved-movies") {
@@ -291,6 +316,7 @@ function App() {
             handleSearchFormMovies={handleSearchFormMovies}
             moreMoviesBtnHandler={moreMoviesBtnHandler}
             handleCardSave={handleCardSave}
+            sortShortFilm={sortShortFilm}
           />
           <ProtectedRoute
             component={SavedMovies}
@@ -300,6 +326,7 @@ function App() {
             MoviesForRender={savedRenderMovieList}
             handleSearchFormMovies={handleSearchFormMovies}
             onCardDelete={handleCardDelete}
+            sortShortFilm={sortShortFilm}
           />
           <ProtectedRoute
             component={Profile}
