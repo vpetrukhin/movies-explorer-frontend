@@ -7,8 +7,8 @@ const Profile = ({ profileUpdate, signOutHandler }) => {
   const { values, handleChange, resetForm, isValid, errors } = useFormWithValidation();
 
   const errClassName = !isValid
-    ? "input__error-text input__error-text_active"
-    : "input__error-text";
+    ? "profile__input-error-text profile__input-error-text_active"
+    : "profile__input-error-text";
 
 
   const handleSubmit = (e) => {
@@ -56,7 +56,11 @@ const Profile = ({ profileUpdate, signOutHandler }) => {
           />
           <span className={errClassName}>{errors.email || ""}</span>
         </div>
-        <button type="submit" className="profile__btn">
+        <button
+          type="submit"
+          className={`profile__btn ${!isValid && "profile__btn_disabled"}`}
+          disabled={!isValid}
+        >
           Редактировать
         </button>
       </form>
