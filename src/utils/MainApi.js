@@ -1,46 +1,45 @@
 import { BESTFILMS_BASE_URL, MYAPI_BASE_URL } from "./constance";
+import { getResponse } from "./getResponse";
 
-export async function register(name, email, password) {
-  const res = await fetch(`${MYAPI_BASE_URL}/signup`, {
+
+
+export function register(name, email, password) {
+  return fetch(`${MYAPI_BASE_URL}/signup`, {
     method: 'POST',
     credentials: 'include',
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ name, email, password }),
-  });
-  const json = await res.json();
-  return json;
-}
+  })
+    .then((res) => getResponse(res));
+};
 
-export async function login(email, password) {
-  const res = await fetch(`${MYAPI_BASE_URL}/signin`, {
-    method: 'POST',
-    credentials: 'include',
+export function login(email, password) {
+  return fetch(`${MYAPI_BASE_URL}/signin`, {
+    method: "POST",
+    credentials: "include",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({ email, password }),
-  });
-  const json = await res.json()
-  return json;
+  }).then((res) => getResponse(res));
 }
 
-export async function getUserInfo(jwt) {
-  const res = await fetch(`${MYAPI_BASE_URL}/users/me`, {
+export function getUserInfo(jwt) {
+  return fetch(`${MYAPI_BASE_URL}/users/me`, {
     method: "GET",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
       'Authorization': `Bearer ${jwt}`,
     },
-  });
-  const json = await res.json();
-  return json;
+  })
+    .then(res => getResponse(res));
 }
 
-export async function updateUserInfo(email, name, jwt) {
-  const res = await fetch(`${MYAPI_BASE_URL}/users/me`, {
+export function updateUserInfo(email, name, jwt) {
+  return fetch(`${MYAPI_BASE_URL}/users/me`, {
     method: 'PATCH',
     credentials: 'include',
     headers: {
@@ -49,31 +48,29 @@ export async function updateUserInfo(email, name, jwt) {
     },
     body: JSON.stringify({ email, name }),
   })
-  const json = await res.json();
-  return json;
+    .then(res => getResponse(res));
 }
 
-export async function getSavedFilms(jwt) {
-  const res = await fetch(`${MYAPI_BASE_URL}/movies`, {
+export function getSavedFilms(jwt) {
+  return fetch(`${MYAPI_BASE_URL}/movies`, {
     method: 'GET',
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${jwt}`,
     },
-  });
-  const json = await res.json();
-  return json;
+  })
+    .then(res => getResponse(res));
 }
 
-export async function addFilm(filmData, jwt) {
+export function addFilm(filmData, jwt) {
   const { country, director, duration, year, description, nameRU, nameEN  } = filmData;
   const image = `${BESTFILMS_BASE_URL}${filmData.image.url}`;
   const thumbnail = `${BESTFILMS_BASE_URL}${filmData.image.formats.thumbnail.url}`;
   const trailer = filmData.trailerLink;
   const movieId = filmData.id;
 
-  const res = await fetch(`${MYAPI_BASE_URL}/movies`, {
+  return fetch(`${MYAPI_BASE_URL}/movies`, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -93,20 +90,18 @@ export async function addFilm(filmData, jwt) {
       nameRU,
       nameEN,
     }),
-  });
-  const json = await res.json();
-  return json;
+  })
+    .then(res => getResponse(res));
 }
 
-export async function deleteFilm(movieId, jwt) {
-  const res = await fetch(`${MYAPI_BASE_URL}/movies/${movieId}`, {
+export function deleteFilm(movieId, jwt) {
+  return fetch(`${MYAPI_BASE_URL}/movies/${movieId}`, {
     method: "DELETE",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
       'Authorization': `Bearer ${jwt}`,
     },
-  });
-  const json = await res.json();
-  return json;
+  })
+    .then(res => getResponse(res));
 }

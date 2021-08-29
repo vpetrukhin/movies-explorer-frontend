@@ -21,6 +21,7 @@ import {
 } from "../../utils/MainApi";
 import { currentUserContext } from '../../contexts/userContext';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
+import PageNotFound from '../PageNotFound/PageNotFound';
 
 function App() {
   const [fetchMovieList, setFetchMovieList] = useState([]);
@@ -39,28 +40,35 @@ function App() {
   })
   const [loggedIn, setLoggedIn] = useState(false);
   const [isCardSave, setIsCardSave] = useState(false);
+  const [fetchError, setFetchError] = useState({
+    isError: false,
+    error: '',
+  })
 
   const history = useHistory();
   const location = useLocation();
 
-  async function getMovieList({ input, isShortFilm }) {
-    try {
-      setIsInfoToolTipActive(false);
-      setLoading(true);
-      const films = await getFilms();
-      const sortMovieList = sortFilms(films, input, isShortFilm);
-      setLoading(false);
-      if (!sortMovieList.length) {
-        setNotFound(true);
-      } else {
-        setNotFound(false);
-      }
-      setFetchMovieList(sortMovieList);
-      localStorage.setItem('movies', JSON.stringify(sortMovieList))
-    } catch (err) {
-      setLoading(false);
-      setIsInfoToolTipActive(true);
-    }
+  function getMovieList({ input, isShortFilm }) {
+    getFilms()
+      .then(films => {
+        setIsInfoToolTipActive(false);
+        setLoading(false);
+        const sortMovieList = sortFilms(films, input, isShortFilm);
+        if (!sortMovieList.length) {
+          setNotFound(true);
+        } else {
+          setNotFound(false);
+        }
+        setFetchMovieList(sortMovieList);
+        localStorage.setItem("movies", JSON.stringify(sortMovieList));
+      })
+      .catch(err => {
+        if (err) {
+          setLoading(false);
+          setIsInfoToolTipActive(true);
+        }
+      })
+      .finally(() => setLoading(true));
   }
 
   const renderMovies = (fetchMovies, renderCount, moviesArrayForRender) => {
@@ -88,8 +96,6 @@ function App() {
     if (fetchMovies.length) {
       renderMovies(fetchMovies, renderCount, moviesArrayForRender);
     }
-
-
 
     setRenderMovieList(moviesArrayForRender);
     setMoreBtnDisabled(false);
@@ -146,55 +152,45 @@ function App() {
 
   const moreMoviesBtnHandler = () => {
     renderMoreMovies(fetchMovieList, renderMovieList.length, setCountRenderMovies().more);
-  }
+  };
 
-  async function handleCardSave(filmData, isSave) {
+  function handleCardSave(filmData, isSave) {
     const jwt = localStorage.jwt;
-    try {
-      const savedMovie = await addFilm(filmData, jwt);
-      if (savedMovie) {
+    addFilm(filmData, jwt)
+      .then(savedMovie => {
+        if (savedMovie) {
         const { movie } = savedMovie;
         setSavedMovieList(savedMovieList.concat(movie));
         setIsCardSave(isSave);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  async function handleCardDelete(movieId) {
-    const jwt = localStorage.jwt;
-    try {
-      const deleteMovie = await deleteFilm(movieId, jwt);
-      if (deleteMovie) getSavedMovies();
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  async function getSavedMovies() {
-    const savedMovies = await getSavedFilms(localStorage.jwt);
-    setSavedMovieList(savedMovies);
-  }
-
-  async function checkToken () {
-    const jwt = localStorage.getItem('jwt');
-    if (jwt) {
-      try {
-        const userInfo = await getUserInfo(jwt);
-        if (userInfo) {
-          setCurrentUser({
-            ...currentUser,
-            email: userInfo.email,
-            name: userInfo.name,
-          });
-          setLoggedIn(true);
-          history.push('movies');
         }
-      } catch (err) {
-        console.log(err);
-      }
+      })
+      .catch(err => console.log(err));
+  };
 
+  function handleCardDelete(movieId) {
+    const jwt = localStorage.jwt;
+    deleteFilm(movieId, jwt)
+      .then(deleteMovie => {
+        if (deleteMovie) getSavedMovies();
+      });
+  };
+
+  function getSavedMovies() {
+    if (localStorage.jwt !== undefined) {
+      getSavedFilms(localStorage.jwt)
+        .then((savedMovies) =>
+          setSavedMovieList(savedMovies)
+        )
+        .catch(err => console.log(err));
+    }
+  }
+
+  function checkToken () {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt && jwt !== undefined) {
+      getUserInfo(jwt)
+        .then(user => authorize(user))
+        .catch(err => console.log(err));
     }
   }
 
@@ -202,41 +198,77 @@ function App() {
 
   useEffect(() => getSavedMovies(), [isCardSave]);
 
-  async function handleRegister({ name, email, password }) {
-    try {
-      const user = await register(name, email, password);
-      if (user) history.push('signin');
-    } catch (err) {
-      console.log(err);
+  const authorize = user => {
+    const { _id, token, name } = user;
+    if (token !== undefined) {
+      localStorage.setItem("jwt", token);
     }
+    setCurrentUser({ _id, name, email: user.email });
+    setLoggedIn(true);
+    history.push("movies");
+}
+
+  function handleRegister({ name, email, password }) {
+    register(name, email, password)
+      .then((regUser) => {
+        if (regUser) {
+          login(email, password).then((user) => {
+            if (user) {
+              authorize(user)
+            }
+          });
+        }
+      })
+
+      .catch((err) => console.log(err.message));
   }
 
-  async function handleLogin({ email, password }) {
-    try {
-      const user = await login(email, password);
-      const { _id, token, name } = await user;
-      setCurrentUser({ _id, name, email: user.email });
-      localStorage.setItem('jwt', token);
-      setLoggedIn(true);
-      history.push('movies');
-    } catch (err) {
-      console.log(err);
-    }
+  function handleLogin({ email, password }) {
+    login(email, password)
+      .then((user) => {
+        setFetchError({
+          isError: false,
+          error: '',
+        });
+        authorize(user);
+      })
+      .catch((err) => {
+        setFetchError({
+          isError: true,
+          error: err,
+        })
+      });
   }
 
-  async function handleUpdateUserInfo({ email, name }) {
-    try {
-      const newUserInfo = await updateUserInfo(email, name, localStorage.getItem('jwt'));
-    if (newUserInfo) {
-      setCurrentUser({ ...currentUser, name: newUserInfo.name, email: newUserInfo.email });
-    }
-    } catch (err) {
-      console.log(err);
-    }
+  function handleUpdateUserInfo({ email, name }) {
+    updateUserInfo(email, name, localStorage.getItem('jwt'))
+      .then(newUserInfo => {
+        if (newUserInfo) {
+          setFetchError({
+            isError: false,
+            error: '',
+          });
+          setCurrentUser({
+            ...currentUser,
+            name: newUserInfo.name,
+            email: newUserInfo.email,
+          });
+        }
+      })
+      .catch(err => {
+        setFetchError({
+          isError: true,
+          error: err,
+        })
+      })
 
   }
 
-
+  const signOutHandler = () => {
+    localStorage.removeItem('jwt');
+    setLoggedIn(false);
+    history.push("/");
+  }
 
   return (
     <div className="app">
@@ -274,12 +306,19 @@ function App() {
             path="/profile"
             loggedIn={loggedIn}
             profileUpdate={handleUpdateUserInfo}
+            signOutHandler={signOutHandler}
           />
           <Route path="/signup">
-            <Register registerHandler={handleRegister} />
+            <Register
+              registerHandler={handleRegister}
+              fetchError={fetchError}
+            />
           </Route>
           <Route path="/signin">
-            <Login submitHandler={handleLogin} />
+            <Login submitHandler={handleLogin} fetchError={fetchError} />
+          </Route>
+          <Route path="*">
+            <PageNotFound />
           </Route>
         </Switch>
         <Footer />

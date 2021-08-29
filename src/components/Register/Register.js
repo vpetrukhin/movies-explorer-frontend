@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import Logo from "../Logo/Logo";
 import { useFormWithValidation } from "../../hooks/useForm";
 
-const Register = ({ registerHandler }) => {
+const Register = ({ registerHandler, fetchError }) => {
   const {
     values,
     errors,
@@ -15,11 +15,6 @@ const Register = ({ registerHandler }) => {
   const errClassName = !isValid
     ? "input__error-text input__error-text_active"
     : "input__error-text";
-
-  // useEffect(() => {
-  //   resetForm();
-  // }, [])
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -85,7 +80,12 @@ const Register = ({ registerHandler }) => {
           />
           <span className={errClassName}>{errors.password || ""}</span>
         </div>
-        <button className="register__btn" type="submit">
+        {fetchError.isError && <p className="register__err">{fetchError.error}</p>}
+        <button
+          className={`register__btn ${!isValid && "register__btn_disabled"}`}
+          type="submit"
+          disabled={!isValid}
+        >
           Зарегистрироваться
         </button>
         <p className="register__subtext">

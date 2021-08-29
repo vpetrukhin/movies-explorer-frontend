@@ -40,6 +40,9 @@
   background-color: transparent;
   border: none;
 }
+.profile__input-error {
+  
+}
 .profile__btn {
   display: block;
   border: none;

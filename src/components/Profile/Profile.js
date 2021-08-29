@@ -2,19 +2,21 @@ import React, { useContext } from 'react';
 import { currentUserContext } from '../../contexts/userContext';
 import { useFormWithValidation } from '../../hooks/useForm';
 
-const Profile = ({ profileUpdate }) => {
+const Profile = ({ profileUpdate, signOutHandler }) => {
   const currentUser = useContext(currentUserContext);
-  const {
-    values,
-    handleChange,
-    resetForm,
-  } = useFormWithValidation();
+  const { values, handleChange, resetForm, isValid, errors } = useFormWithValidation();
+
+  const errClassName = !isValid
+    ? "input__error-text input__error-text_active"
+    : "input__error-text";
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
     profileUpdate(values);
     resetForm();
   };
+
 
   return (
     <section className="profile">
@@ -36,6 +38,7 @@ const Profile = ({ profileUpdate }) => {
             maxLength="30"
             required
           />
+          <span className={errClassName}>{errors.name || ""}</span>
         </div>
         <div className="profile__input-wrapper">
           <label className="profile__label" htmlFor="userEmail">
@@ -51,12 +54,16 @@ const Profile = ({ profileUpdate }) => {
             onChange={handleChange}
             required
           />
+          <span className={errClassName}>{errors.email || ""}</span>
         </div>
         <button type="submit" className="profile__btn">
           Редактировать
         </button>
       </form>
-      <button className="profile__btn profile__btn_signout">
+      <button
+        className="profile__btn profile__btn_signout"
+        onClick={signOutHandler}
+      >
         Выйти из аккаунта
       </button>
     </section>

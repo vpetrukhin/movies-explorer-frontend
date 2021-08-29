@@ -29,3 +29,4 @@ body {
 @import './components/Login/Login.css';
 @import './components/Profile/Profile.css';
 @import './components/InfoToolTip/InfoToolTip.css';
+@import './components/PageNotFound/PageNotFound.css';

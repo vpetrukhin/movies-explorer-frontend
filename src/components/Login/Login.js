@@ -4,7 +4,7 @@ import { useFormWithValidation } from "../../hooks/useForm";
 
 import Logo from "../Logo/Logo";
 
-const Login = ({ submitHandler }) => {
+const Login = ({ submitHandler, fetchError }) => {
   const {
     values,
     errors,
@@ -53,12 +53,19 @@ const Login = ({ submitHandler }) => {
             name="password"
             value={values.password || ""}
             onChange={handleChange}
-            minLength='8'
+            minLength="8"
             required
           />
           <span className={errClassName}>{errors.password || ""}</span>
         </div>
-        <button className="login__btn" type="submit">
+        {fetchError.isError && (
+          <p className="register__err">Попробуйте снова</p>
+        )}
+        <button
+          className={`login__btn ${!isValid && 'login__btn_disabled'}`}
+          type="submit"
+          disabled={!isValid}
+        >
           Войти
         </button>
         <p className="login__subtext">
