@@ -70,7 +70,7 @@ const MoviesCard = ({
       </Route>
       <Route path="/saved-movies">
         <li className="movies-cards__card">
-          <article className="movies-card">
+          <article className="movies-card movies-card_saved">
             <button
               className="movies-card__btn movies-card__btn_saved"
               type="button"

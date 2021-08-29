@@ -46,7 +46,7 @@
   border-radius: 30px;
   color: rgba(0, 0, 0, 0);
 }
-.movies-card:hover .movies-card__btn_saved {
+.movies-card_saved:hover .movies-card__btn_saved {
   width: 21px;
   height: 21px;
   background: #313131 url(../../images/deleteMoviesIcon.svg) no-repeat center/10px;
