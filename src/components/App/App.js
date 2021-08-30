@@ -254,7 +254,8 @@ function App() {
         if (regUser) {
           login(email, password).then((user) => {
             if (user) {
-              authorize(user)
+              authorize(user);
+              history.push("/movies");
             }
           });
         }
