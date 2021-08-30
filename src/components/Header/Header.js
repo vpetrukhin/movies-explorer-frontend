@@ -4,7 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 import Logo from '../Logo/Logo';
 import Navigation from '../Navigation/Navigation';
 
-const Header = () => {
+const Header = ({ loggedIn }) => {
 
   return (
     <Switch>
@@ -17,7 +17,7 @@ const Header = () => {
       <Route exact path="/">
         <header className="header">
           <Logo />
-          <Navigation />
+          <Navigation loggedIn={loggedIn}/>
         </header>
       </Route>
       <Route exact path="/movies">

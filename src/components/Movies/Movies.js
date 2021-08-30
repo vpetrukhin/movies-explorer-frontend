@@ -18,6 +18,7 @@ const Movies = ({
   checkSavedCard,
   savedMovies,
   sortShortFilm,
+  onCardDelete,
 }) => {
   return (
     <main className="movies">
@@ -38,6 +39,7 @@ const Movies = ({
           handleCardSave={handleCardSave}
           checkSavedCard={checkSavedCard}
           savedMovies={savedMovies}
+          handleDeleteCard={onCardDelete}
         />
       )}
 

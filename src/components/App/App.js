@@ -22,9 +22,11 @@ import {
 import { currentUserContext } from '../../contexts/userContext';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import PageNotFound from '../PageNotFound/PageNotFound';
+import { CARD_COUNT, SIZES } from '../../utils/constance';
 
 function App() {
   const [fetchMovieList, setFetchMovieList] = useState([]);
+  const [sortedMovieList, setSortedMovieList] = useState([]);
   const [renderMovieList, setRenderMovieList] = useState([]);
   const [savedMovieList, setSavedMovieList] = useState([]);
   const [savedRenderMovieList, setSavedRenderMovieList] = useState([]);
@@ -33,36 +35,32 @@ function App() {
   const [notFound, setNotFound] = useState(false);
   const [isInfoToolTipActive, setIsInfoToolTipActive] = useState(false);
   const [moreBtnDisabled, setMoreBtnDisabled] = useState(true);
+
   const [currentUser, setCurrentUser] = useState({
     _id: '',
     name: '',
     email: '',
-  })
+  });
+
   const [loggedIn, setLoggedIn] = useState(false);
   const [isCardSave, setIsCardSave] = useState(false);
   const [fetchError, setFetchError] = useState({
+    isSuccess: false,
     isError: false,
     error: '',
-  })
+  });
 
   const history = useHistory();
   const location = useLocation();
 
-  function getMovieList({ input, isShortFilm }) {
+  const getFetchMovie = () => {
     getFilms()
-      .then(films => {
-        setIsInfoToolTipActive(false);
+      .then((fetchFilms) => {
         setLoading(false);
-        const sortMovieList = sortFilms(films, input, isShortFilm);
-        if (!sortMovieList.length) {
-          setNotFound(true);
-        } else {
-          setNotFound(false);
-        }
-        setFetchMovieList(sortMovieList);
-        localStorage.setItem("movies", JSON.stringify(sortMovieList));
+        setFetchMovieList(fetchFilms);
+        localStorage.setItem("movies", JSON.stringify(fetchFilms));
       })
-      .catch(err => {
+      .catch((err) => {
         if (err) {
           setLoading(false);
           setIsInfoToolTipActive(true);
@@ -71,93 +69,106 @@ function App() {
       .finally(() => setLoading(true));
   }
 
-  function sortShortFilm({ input, isShortFilm }) {
-    const shortFilm = !isShortFilm;
-    console.log(shortFilm);
-
-    if (shortFilm) {
-      if (fetchMovieList.length === 0) {
-        setFetchMovieList(
-          sortFilms(JSON.parse(localStorage.movies), input, shortFilm)
-        );
-      } else {
-        setFetchMovieList(sortFilms(fetchMovieList, input, shortFilm));
-      }
-    } else {
-      setFetchMovieList(JSON.parse(localStorage.movies));
+  function generateSortedMovieList({ input, isShortFilm }) {
+    if (localStorage.sortedMovies !== undefined && !input && !isShortFilm) {
+      setSortedMovieList(
+        sortFilms(JSON.parse(localStorage.sortedMovies), input, isShortFilm)
+      );
+    }
+    if (localStorage.movies === undefined && fetchMovieList.length === 0) {
+      console.log("fetch");
+      getFetchMovie();
+    } else if (fetchMovieList.length !== 0) {
+      console.log("fromfetch");
+      setSortedMovieList(sortFilms(fetchMovieList, input, isShortFilm));
+    } else if (localStorage.movies !== undefined) {
+      console.log("fromlocal");
+      setSortedMovieList(
+        sortFilms(JSON.parse(localStorage.movies), input, isShortFilm)
+      );
+      localStorage.setItem("sortedMovies", JSON.stringify(sortedMovieList));
     }
 
   }
 
-  const renderMovies = (fetchMovies, renderCount, moviesArrayForRender) => {
+  function sortShortFilm({ input, isShortFilm }) {
+    const shortFilm = !isShortFilm;
+    shortFilm
+      ? setSortedMovieList(sortFilms(sortedMovieList, input, shortFilm))
+      : generateSortedMovieList(input, isShortFilm);
+  }
 
+  const renderMovies = (sortMovies, renderCount, moviesArrayForRender) => {
+    sortedMovieList.length === 0 ? setNotFound(true) : setNotFound(false);
+    setLoading(false);
 
-    if (fetchMovies.length < renderCount) {
-      fetchMovies.forEach((movie) => moviesArrayForRender.push(movie));
+    if (sortMovies.length < renderCount) {
+      sortMovies.forEach((movie) => moviesArrayForRender.push(movie));
     } else {
-
       for (let movieCount = 0; movieCount < renderCount; movieCount++) {
-        const movie = fetchMovies[movieCount];
+        const movie = sortMovies[movieCount];
         moviesArrayForRender.push(movie);
       }
     }
-
   };
 
-  const renderBaseMovies = (fetchMovies, renderCount) => {
+  const renderBaseMovies = (sortMovies, renderCount) => {
     const moviesArrayForRender = [];
 
-    if (localStorage.movies !== undefined && fetchMovies.length === 0) {
-      renderMovies(JSON.parse(localStorage.movies), renderCount, moviesArrayForRender)
-    }
-
-    if (fetchMovies.length) {
-      renderMovies(fetchMovies, renderCount, moviesArrayForRender);
+    if (sortMovies.length !== 0) {
+      setIsInfoToolTipActive(false);
+      setMoreBtnDisabled(false);
+      renderMovies(sortMovies, renderCount, moviesArrayForRender);
+    } else {
+      setLoading(false);
+      setIsInfoToolTipActive(true);
+      setMoreBtnDisabled(true);
     }
 
     setRenderMovieList(moviesArrayForRender);
-    setMoreBtnDisabled(false);
+
   }
 
-  const renderMoreMovies = (fetchMovies, lastMovieIndex, renderMoreMoviesCount) => {
-    if (!fetchMovies.length) {
-      fetchMovies = JSON.parse(localStorage.movies);
+  const renderMoreMovies = (sortMovies, lastMovieIndex, renderMoreMoviesCount) => {
+    if (lastMovieIndex === sortMovies.length) {
+      setMoreBtnDisabled(true);
     }
-
-    const moviesArrayForRender = fetchMovies.slice(
+    const moviesArrayForRender = sortMovies.slice(
       lastMovieIndex,
       lastMovieIndex + renderMoreMoviesCount
     );
-
-    if (lastMovieIndex === fetchMovies.length) {
-      setMoreBtnDisabled(true);
-    }
-      setRenderMovieList(renderMovieList.concat(moviesArrayForRender));
+    setRenderMovieList(renderMovieList.concat(moviesArrayForRender));
   }
 
   const setCountRenderMovies = () => {
-    let countsRenderMovies = {
+    const countsRenderMovies = {
       base: 0,
       more: 0,
     }
 
-    if (window.innerWidth >= 1165) {
-      countsRenderMovies.base = 12;
-      countsRenderMovies.more = 3;
-    } else if (window.innerWidth >= 615 && window.innerWidth <= 1165) {
-      countsRenderMovies.base = 8;
-      countsRenderMovies.more = 2;
-    } else if (window.innerWidth >= 320 && window.innerWidth <= 615) {
-      countsRenderMovies.base = 5;
-      countsRenderMovies.more = 2;
+    if (window.innerWidth >= SIZES.desktop) {
+      countsRenderMovies.base = CARD_COUNT.baseForDesktop;
+      countsRenderMovies.more = CARD_COUNT.moreForDecktop;
+    } else if (window.innerWidth >= SIZES.tablet && window.innerWidth <= SIZES.desktop) {
+      countsRenderMovies.base = CARD_COUNT.baseForTablet;
+      countsRenderMovies.more = CARD_COUNT.moreForTablet;
+    } else if (window.innerWidth >= SIZES.mobile && window.innerWidth <= SIZES.tablet) {
+      countsRenderMovies.base = CARD_COUNT.baseForMobile;
+      countsRenderMovies.more = CARD_COUNT.moreForMobile;
     }
 
     return countsRenderMovies;
   }
 
   useEffect(() => {
-    renderBaseMovies(fetchMovieList, setCountRenderMovies().base);
-  }, [fetchMovieList]);
+    generateSortedMovieList({
+      input: '',
+      isShortFilm: false,
+    });
+  }, [])
+  useEffect(() => {
+    renderBaseMovies(sortedMovieList, setCountRenderMovies().base);
+  }, [sortedMovieList]);
   useEffect(() => {
     window.addEventListener('resize', renderBaseMovies(fetchMovieList, setCountRenderMovies().base))
     return window.removeEventListener(
@@ -168,15 +179,15 @@ function App() {
 
   const handleSearchFormMovies = (input, isShortFilm) => {
     if (location.pathname === "/saved-movies") {
-      // console.log(sortFilms(savedMovieList, input, isShortFilm));
       setSavedRenderMovieList(sortFilms(savedMovieList, input, isShortFilm))
     } else {
-      getMovieList({ input, isShortFilm });
+      console.log('search');
+      generateSortedMovieList({ input, isShortFilm });
     }
   };
 
   const moreMoviesBtnHandler = () => {
-    renderMoreMovies(fetchMovieList, renderMovieList.length, setCountRenderMovies().more);
+    renderMoreMovies(sortedMovieList, renderMovieList.length, setCountRenderMovies().more);
   };
 
   function handleCardSave(filmData, isSave) {
@@ -214,7 +225,10 @@ function App() {
     const jwt = localStorage.getItem('jwt');
     if (jwt && jwt !== undefined) {
       getUserInfo(jwt)
-        .then(user => authorize(user))
+        .then(user => {
+          authorize(user);
+          history.push(location.pathname);
+        })
         .catch(err => console.log(err));
     }
   }
@@ -223,6 +237,8 @@ function App() {
 
   useEffect(() => getSavedMovies(), [isCardSave]);
 
+
+
   const authorize = user => {
     const { _id, token, name } = user;
     if (token !== undefined) {
@@ -230,7 +246,6 @@ function App() {
     }
     setCurrentUser({ _id, name, email: user.email });
     setLoggedIn(true);
-    history.push("movies");
 }
 
   function handleRegister({ name, email, password }) {
@@ -252,26 +267,30 @@ function App() {
     login(email, password)
       .then((user) => {
         setFetchError({
+          isSuccess: false,
           isError: false,
-          error: '',
+          error: "",
         });
         authorize(user);
+        history.push('/movies');
       })
       .catch((err) => {
         setFetchError({
+          isSuccess: false,
           isError: true,
           error: err,
-        })
+        });
       });
   }
 
   function handleUpdateUserInfo({ email, name }) {
-    updateUserInfo(email, name, localStorage.getItem('jwt'))
-      .then(newUserInfo => {
+    updateUserInfo(email, name, localStorage.getItem("jwt"))
+      .then((newUserInfo) => {
         if (newUserInfo) {
           setFetchError({
+            isSuccess: true,
             isError: false,
-            error: '',
+            error: "",
           });
           setCurrentUser({
             ...currentUser,
@@ -280,17 +299,21 @@ function App() {
           });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         setFetchError({
+          isSuccess: false,
           isError: true,
           error: err,
-        })
+        });
       })
+
 
   }
 
   const signOutHandler = () => {
     localStorage.removeItem('jwt');
+    localStorage.removeItem('movies');
+    localStorage.removeItem('sortedMovies');
     setLoggedIn(false);
     history.push("/");
   }
@@ -298,7 +321,7 @@ function App() {
   return (
     <div className="app">
       <currentUserContext.Provider value={currentUser}>
-        <Header />
+        <Header loggedIn={loggedIn} />
         <Switch>
           <Route exact path="/">
             <Main />
@@ -316,6 +339,7 @@ function App() {
             handleSearchFormMovies={handleSearchFormMovies}
             moreMoviesBtnHandler={moreMoviesBtnHandler}
             handleCardSave={handleCardSave}
+            onCardDelete={handleCardDelete}
             sortShortFilm={sortShortFilm}
           />
           <ProtectedRoute
@@ -334,6 +358,7 @@ function App() {
             loggedIn={loggedIn}
             profileUpdate={handleUpdateUserInfo}
             signOutHandler={signOutHandler}
+            fetchError={fetchError}
           />
           <Route path="/signup">
             <Register

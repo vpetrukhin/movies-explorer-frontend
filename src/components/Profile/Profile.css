@@ -57,6 +57,16 @@
 .profile__input-error-text_active {
   display: block;
 }
+.profile__message {
+  margin: 0;
+  margin-bottom: 10px;
+  font-size: 11px;
+  line-height: 13px;
+  text-align: center;
+}
+.profile__message_error {
+  color: #EE3465;
+}
 .profile__btn {
   display: block;
   border: none;

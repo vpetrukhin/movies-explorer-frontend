@@ -30,6 +30,7 @@ const MoviesCardList = ({
                   key={movie.id ? movie.id : movie._id}
                   handleSaveMovie={handleCardSave}
                   savedMovies={savedMovies}
+                  handleDeleteCard={handleDeleteCard}
                 />
               ))}
             </ul>

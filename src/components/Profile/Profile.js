@@ -1,22 +1,26 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { currentUserContext } from '../../contexts/userContext';
 import { useFormWithValidation } from '../../hooks/useForm';
 
-const Profile = ({ profileUpdate, signOutHandler }) => {
+const Profile = ({ profileUpdate, signOutHandler, fetchError }) => {
   const currentUser = useContext(currentUserContext);
-  const { values, handleChange, resetForm, isValid, errors } = useFormWithValidation();
+  const {
+    values,
+    handleChange,
+    resetForm,
+    isValid,
+    errors,
+  } = useFormWithValidation();
 
   const errClassName = !isValid
     ? "profile__input-error-text profile__input-error-text_active"
     : "profile__input-error-text";
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
     profileUpdate(values);
     resetForm();
   };
-
 
   return (
     <section className="profile">
@@ -56,6 +60,14 @@ const Profile = ({ profileUpdate, signOutHandler }) => {
           />
           <span className={errClassName}>{errors.email || ""}</span>
         </div>
+        {fetchError.isSuccess && (
+          <p className="profile__message">Информация обновленна!</p>
+        )}
+        {fetchError.isError && (
+          <p className="profile__message profile__message_error">
+            Ошибка! Попробуйте снова.
+          </p>
+        )}
         <button
           type="submit"
           className={`profile__btn ${!isValid && "profile__btn_disabled"}`}

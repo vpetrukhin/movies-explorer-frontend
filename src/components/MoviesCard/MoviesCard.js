@@ -25,11 +25,12 @@ const MoviesCard = ({
     : "movies-card__btn";
 
   const handleSave = () => {
-    handleSaveMovie(movie, isSave);
-  };
-  const handleDelete = () => {
-    handleDeleteCard(findMovies()._id);
-  };
+    if (!isSave) {
+      handleSaveMovie(movie, isSave)
+    } else {
+      handleDeleteCard(findMovies()._id)
+    }
+  }
   const findMovies = () => {
     return savedMovies.find((savedMovie) => savedMovie.movieId === id);
   };
@@ -75,7 +76,7 @@ const MoviesCard = ({
             <button
               className="movies-card__btn movies-card__btn_saved"
               type="button"
-              onClick={handleDelete}
+              onClick={handleSave}
             />
             <a
               href={trailer}
