@@ -31,9 +31,21 @@
   cursor: pointer;
   transition: background 1s;
 }
-.register__btn:hover {
+.register__btn_disabled {
+  background: #2F2F2F;
+}
+/* .register__btn:hover {
   color: #000000;
   background: #3DDC84;
+} */
+.register__err {
+  margin: 0;
+  margin-bottom: 10px;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 12px;
+  color: #EE3465;
+  text-align: center;
 }
 .register__subtext {
   margin: 0;

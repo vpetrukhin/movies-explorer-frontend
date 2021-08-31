@@ -28,10 +28,13 @@
   cursor: pointer;
   transition: background 1s;
 }
-.login__btn:hover {
+.login__btn_disabled {
+  background: #2F2F2F;
+}
+/* .login__btn:hover {
   color: #000000;
   background: #3DDC84;
-}
+} */
 .login__subtext {
   margin: 0;
   font-weight: 400;
